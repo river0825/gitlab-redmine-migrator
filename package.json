@@ -1,0 +1,42 @@
+{
+  "name": "",
+  "version": "0.0.0",
+  "description": "",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "files": [
+    "build/src"
+  ],
+  "license": "Apache-2.0",
+  "keywords": [],
+  "scripts": {
+    "test": "jest",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc -p .",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "_posttest": "npm run check"
+  },
+  "devDependencies": {
+    "@fluffy-spoon/substitute": "^1.89.0",
+    "@types/commander": "^2.12.2",
+    "@types/jest": "^24.0.21",
+    "@types/node": "^10.0.3",
+    "@types/node-redmine": "^0.2.0",
+    "@types/request": "^2.48.3",
+    "gts": "^1.1.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
+    "typescript": "~3.5.0"
+  },
+  "dependencies": {
+    "commander": "^3.0.2",
+    "gitlab": "^11.4.2",
+    "node-gitlab-webhook": "^1.0.6",
+    "node-redmine": "^0.2.1",
+    "sqlite3": "^4.1.0"
+  }
+}

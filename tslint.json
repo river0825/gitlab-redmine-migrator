@@ -1,0 +1,10 @@
+{
+  "extends": "gts/tslint.json",
+  "interface-name": [true, "always-prefix"],
+  "linterOptions": {
+    "exclude": [
+      "**/*.json",
+      "./node_modules/**/*"
+    ]
+  }
+}
