@@ -1,4 +1,4 @@
-import RedmineException from "./Redmine/Exception/RedmineException";
+import RedmineException from "../Migrate/Exception/RedmineException";
 
 let Redmine = require("node-redmine");
 

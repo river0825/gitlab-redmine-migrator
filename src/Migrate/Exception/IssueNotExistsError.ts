@@ -1,0 +1,3 @@
+class IssueNotExistsError extends Error{
+
+}
