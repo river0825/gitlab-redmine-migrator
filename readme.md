@@ -13,5 +13,6 @@ Now on, we have one way sync from gitlab to redmine
 - Complete the unit test and E2E test 
 - To have a mapper between gitlab and redmine for the users and issues status and etc.
 - To have a filter to filter issue and note and apply with DDD concepts 
+- Complete error handling
+- Add Events for steps
 
-##  
