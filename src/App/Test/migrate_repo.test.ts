@@ -1,6 +1,6 @@
-import {IssueInfo, Issuer} from "../Migrate/Domain/MigrateRecord/IssueInfo";
-import {MigrateRecordRepo} from "../App/Infra/MigrateRecordRepo";
-import {MigrateRecord} from "../Migrate/Domain/MigrateRecord/MigrateRecord";
+import {IssueInfo, Issuer} from "../../Migrate/Domain/MigrateRecord/IssueInfo";
+import {MigrateRecordRepo} from "../Infra/MigrateRecordRepo";
+import {MigrateRecord} from "../../Migrate/Domain/MigrateRecord/MigrateRecord";
 
 describe("migrate repo", () => {
     test("Issue should be create correctly", async () => {
@@ -15,12 +15,5 @@ describe("migrate repo", () => {
             },
             mRepo
         ));
-    });
-
-    test("Issue should update note", async () => {
-        // jest.setTimeout(30000);
-        // const redmineRepo = new RedmineRepo();
-        // await redmineRepo.addNote({id: issueId, issuer: Issuer.Redmine},
-        //     "this is a note from river");
     });
 });

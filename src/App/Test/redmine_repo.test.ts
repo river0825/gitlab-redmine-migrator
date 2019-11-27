@@ -1,5 +1,5 @@
-import {RedmineRepo} from "../App/Infra/RedmineRepo";
-import {IssueInfo, Issuer} from "../Migrate/Domain/MigrateRecord/IssueInfo";
+import {RedmineRepo} from "../Infra/RedmineRepo";
+import {IssueInfo, Issuer} from "../../Migrate/Domain/MigrateRecord/IssueInfo";
 
 describe("redmine repo", () => {
     let issueId  = "0" ;
@@ -13,7 +13,7 @@ describe("redmine repo", () => {
             createdAt: new Date(),
             updatedAt: new Date,
             description: "this is my description"
-        }))
+        }));
 
         issueId = result.id;
         console.log(result);
@@ -38,7 +38,7 @@ describe("redmine repo", () => {
             createdAt: new Date(),
             updatedAt: new Date,
             description: "this is my description"
-        }))
+        }));
 
         console.log(result);
     });

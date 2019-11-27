@@ -15,15 +15,12 @@ export class RedmineRepo implements RemoteIssueRepo {
     private redmine: Redmine;
 
     constructor() {
-        // const hostname = process.env.REDMINE_HOST || 'http://www.hostedredmine.com/projects/test-credit-system'
-        const hostname = process.env.REDMINE_HOST || 'http://www.hostedredmine.com/'
-        const hostWithProject = process.env.REDMINE_HOST || 'http://www.hostedredmine.com/projects/test-credit-system'
+        const hostname = process.env.REDMINE_HOST || 'http://www.hostedredmine.com/';
+        const hostWithProject = (process.env.REDMINE_HOST!.toString() + process.env.REDMINE_PROJECT_PATH!.toString()) || 'http://www.hostedredmine.com/projects/test-credit-system';
 
         const config = {
             apiKey: process.env.REDMINE_APIKEY || '77327f8a54450266a4853d015cb286f445f80590',
         };
-
-        console.log([hostname, config]);
 
         this.redmine = new Redmine(hostname, config);
         this.redmineWithProject = new Redmine(hostWithProject, config);
@@ -39,6 +36,7 @@ export class RedmineRepo implements RemoteIssueRepo {
                     return reject(err);
                 }
 
+                console.log(["create_issue succ", data]);
                 resolve({
                     id: data.issue.id!.toString(),
                     issuer: Issuer.Redmine
@@ -48,12 +46,13 @@ export class RedmineRepo implements RemoteIssueRepo {
     }
 
 
-    addNote(issue: IssueId, note: string): Promise<void> {
+    addNote(issueId: IssueId, note: string): Promise<void> {
         const translator = new RedmineTranslator();
-        const redmineIssue = translator.fromNoteToIssueData(issue, note);
+        const redmineIssue = translator.fromNoteToIssueData(issueId, note);
+
         return new Promise<void>((resolve, reject) => {
             // tslint:disable-next-line:ban-ts-ignore no-any
-            this.redmine.update_issue(Number.parseInt(issue.id, 10), redmineIssue, (err: any, data: Issue) => {
+            this.redmine.update_issue(Number.parseInt(issueId.id, 10), redmineIssue, (err: any, data: Issue) => {
                 if (err) {
                     return reject(err);
                 }

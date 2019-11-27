@@ -1,8 +1,8 @@
 import {ValueObject} from "ts-ddd-common";
 
 export enum Issuer {
-    Gitlab,
-    Redmine
+    Gitlab = 'gitlab',
+    Redmine = 'redmine'
 }
 
 export interface IssueId {
@@ -11,10 +11,12 @@ export interface IssueId {
 }
 
 export enum IssueState {
-    Open,
-    Close,
-    InProgress
+    Open = 'O',
+    Close = 'C',
+    InProgress = 'I'
 }
+
+export type IssueStateString = 'O' | 'C' | 'I';
 
 export interface IssueInfoProp {
     id?: IssueId;
@@ -22,6 +24,7 @@ export interface IssueInfoProp {
     assignee?: string;
     author?: string;
     projectId?: number;
+    projectName?: string;
     createdAt?: Date;
     updatedAt?: Date;
     description?: string;
@@ -34,5 +37,9 @@ export interface IssueInfoProp {
 export class IssueInfo extends ValueObject<IssueInfoProp> {
     toString(): string{
         return `${this.props.id}: ${this.props.title}`
+    }
+
+    setToIssueId(issueId: IssueId): IssueInfo {
+        return new IssueInfo({...this.props, toIssueId: issueId})
     }
 }

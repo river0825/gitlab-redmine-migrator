@@ -1,10 +1,10 @@
 // import program = require('commander');
 // program.version('0.0.1');
-
+//
 // export interface ArgvConfig {
 //     migrateIssueAction: (config: MigrateMsg) => void;
 // }
-
+//
 // export class Program {
 //
 //   constructor(config: ArgvConfig){
@@ -21,4 +21,3 @@
 //         program.parse(process.argv);
 //     }
 // }
-//

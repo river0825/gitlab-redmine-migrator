@@ -14,7 +14,8 @@ export class GitlabTranslator {
             description: issueEvent.object_attributes.description,
             // milestone: issueEvent.project..milestone!.title,
             state: issueEvent.object_attributes.state.toLowerCase() === 'open' ? IssueState.Open : IssueState.InProgress,
-            url: issueEvent.object_attributes.url
+            url: issueEvent.object_attributes.url,
+
         });
     }
 
@@ -23,6 +24,15 @@ export class GitlabTranslator {
             id: {id: event.issue!.id.toString(), issuer: Issuer.Gitlab},
             projectId: event.project.id,
             updatedAt: new Date(event.object_attributes.updated_at),
+
+            title: event.issue!.title,
+            // assignee: event.issue.assignee_id.name,
+            author: event.user.name,
+            createdAt: new Date(event.issue!.created_at),
+            description: event.issue!.description,
+            // milestone: issueEvent.project..milestone!.title,
+            state: event.issue!.state.toLowerCase() === 'open' ? IssueState.Open : IssueState.InProgress,
+            url: event.object_attributes.url,
         });
     }
     static fromNoteEventToNote(event: NoteEvent): string {
