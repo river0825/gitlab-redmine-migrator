@@ -11,6 +11,7 @@ export interface IssueId {
 }
 
 export enum IssueState {
+    Resolved = 'R',
     Open = 'O',
     Close = 'C',
     InProgress = 'I'
@@ -32,6 +33,7 @@ export interface IssueInfoProp {
     state?: IssueState;
     url?: string;
     toIssueId?: IssueId;
+    labels?: string[];
 }
 
 export class IssueInfo extends ValueObject<IssueInfoProp> {

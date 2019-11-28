@@ -5,12 +5,12 @@ export class RedmineTranslator {
 
     statusMap: Record<IssueState, number> = {
         [IssueState.Open]: 1, //redmine:New
-        [IssueState.InProgress]: 8, //redmine:InProgress
+        [IssueState.InProgress]: 2, //redmine:InProgress
+        [IssueState.Resolved]: 3, //redmine:InProgress
         [IssueState.Close]: 5 //redmine: Closed
     };
 
     fromIssueInfoToIssueData(info: IssueInfo): IssueData {
-
         return {
             issue: {
                 // project_id: Number.parseInt(info.props.id!.id, 10),

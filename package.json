@@ -18,7 +18,8 @@
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
-    "_posttest": "npm run check"
+    "_posttest": "npm run check",
+    "dist": ""
   },
   "devDependencies": {
     "@fluffy-spoon/substitute": "^1.89.0",
@@ -31,7 +32,8 @@
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
-    "typescript": "~3.5.0"
+    "typescript": "~3.5.0",
+    "webpack": "^4.41.2"
   },
   "dependencies": {
     "commander": "^3.0.2",

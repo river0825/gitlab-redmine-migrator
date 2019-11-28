@@ -22,7 +22,7 @@ http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void =>
         }
 
         res.statusCode = 404;
-        res.end('no such location');
+        res.end('no such location: ' + req.url);
     })
 }).listen(process.env.GRM_LISTEN_PORT);
 

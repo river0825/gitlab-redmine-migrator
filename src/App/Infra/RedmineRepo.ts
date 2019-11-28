@@ -69,6 +69,7 @@ export class RedmineRepo implements RemoteIssueRepo {
     updateIssue(issue: IssueInfo): Promise<IssueId> {
         const translator = new RedmineTranslator();
         const redmineIssue = translator.fromIssueInfoToIssueData(issue);
+        console.log(['to redmine issue', redmineIssue]);
         return new Promise<IssueId>((resolve, reject) => {
             // tslint:disable-next-line:ban-ts-ignore no-any
             this.redmine.update_issue(Number.parseInt(issue.props.toIssueId!.id, 10), redmineIssue, (err: any, data: Issue) => {

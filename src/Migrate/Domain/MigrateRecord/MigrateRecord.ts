@@ -37,12 +37,10 @@ export class MigrateRecord {
 
     async migrate(from: IssueInfo, toRepo: RemoteIssueRepo): Promise<void> {
         if (this._toIssueId !== undefined) {
-            console.log({from});
             this._issueInfo = from;
             await toRepo.updateIssue(from);
             await this._migrateRepo.save(this);
         } else {
-            console.log(["create redmine issue", from]);
             this._toIssueId = await toRepo.addIssue(from);
             await this._migrateRepo.save(this)
         }

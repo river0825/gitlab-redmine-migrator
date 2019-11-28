@@ -17,7 +17,9 @@ export class MigrateRecordRepo implements MigrateRepo {
         } else {
             this._directory = process.cwd() + Path.sep + "data"
         }
-        fs.mkdirSync(this._directory, {recursive: true})
+        if (!fs.existsSync(this._directory)) {
+            fs.mkdirSync(this._directory, {recursive: true})
+        }
     }
 
     private getFilePath(issueInfo: IssueInfo): string {

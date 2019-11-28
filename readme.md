@@ -15,4 +15,5 @@ Now on, we have one way sync from gitlab to redmine
 - To have a filter to filter issue and note and apply with DDD concepts 
 - Complete error handling
 - Add Events for steps
+- Deploy to NPM packages
 
