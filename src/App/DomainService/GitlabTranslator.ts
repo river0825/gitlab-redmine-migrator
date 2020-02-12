@@ -19,7 +19,7 @@ export class GitlabIssueEvnetTranslator implements Translator<IssueEvent, Issue>
 
     toIssueInfo(issueEvent: IssueEvent, migrateRecord?: MigrateRecord): Promise<IssueInfo> {
         return new Promise<IssueInfo>((resolve) => {
-            const labelArr = issueEvent.labels.map<string>((label: string) => {
+            const labelArr = issueEvent.labels.map<string>((label) => {
                 return label.title
             });
 

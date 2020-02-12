@@ -11,7 +11,7 @@
   "keywords": [],
   "scripts": {
     "test": "jest",
-    "start": "node ./build/src/App/gitlabWebhook.js",
+    "start": "./env/scripts/start.sh",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
