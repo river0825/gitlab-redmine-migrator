@@ -19,7 +19,8 @@
     "prepare": "npm run compile",
     "pretest": "npm run compile",
     "_posttest": "npm run check",
-    "dist": ""
+    "dist": "",
+    "watch": "tsc -w"
   },
   "devDependencies": {
     "@fluffy-spoon/substitute": "^1.89.0",

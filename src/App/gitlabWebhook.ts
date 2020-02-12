@@ -1,13 +1,19 @@
 import * as http from 'http'
 import * as createHandler from 'node-gitlab-webhook'
-import {EventData, IssueEvent, NoteEvent} from "node-gitlab-webhook/interfaces";
+import {EventData, Issue, IssueEvent, NoteEvent} from "node-gitlab-webhook/interfaces";
 import {MigrateIssueSrv} from "../Migrate/Application/Service/MigrateIssueSrv";
 import {RedmineRepo} from "./Infra/RedmineRepo";
 import {MigrateRecordRepo} from "./Infra/MigrateRecordRepo";
-import {GitlabTranslator} from "./DomainService/GitlabTranslator";
+import {GitlabIssueEvnetTranslator, GitlabTranslator} from "./DomainService/GitlabTranslator";
 import * as Path from "path";
 import {AddNoteSrv} from "../Migrate/Application/Service/AddNoteSrv";
+import {GitlabStatusMapper} from "./DomainService/GitlabStatusMapper";
+import {UserJSONRepo} from "./Infra/UserJSONRepo";
+import {User} from "../UserMap/Domain/User";
 
+/**
+ * gitlab-webhook
+ */
 const handler = createHandler([ // multiple handlers
     {path: '/issue', secret: 'issue'},
     {path: '/comment', secret: 'comment'}
@@ -15,6 +21,9 @@ const handler = createHandler([ // multiple handlers
 
 console.log("Starting Server, listen to " + process.env.GRM_LISTEN_PORT);
 console.log(`Redmine location: ${process.env.REDMINE_HOST}${process.env.REDMINE_PROJECT_PATH}`);
+/**
+ * Create a server that pass the gitlab web-hook information
+ */
 http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void => {
     handler(req, res, (err) => {
         if (err) {
@@ -28,6 +37,14 @@ http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void =>
 
 const MIGRATE_RECORD_REPO_DATA_PATH = process.cwd() + Path.sep + "data";
 
+/**
+ * Provide ability to add user maps
+ * TODO: addUserMap()
+ */
+
+/**
+ * Handling events from gitlab webhook
+ */
 handler.on('error', (err) => {
     console.error('Error:', err.message)
 });
@@ -39,8 +56,19 @@ handler.on('issue', (event: EventData<IssueEvent>) => {
         event.payload.object_attributes.title,
     );
 
-    const srv = new MigrateIssueSrv(new RedmineRepo(), new MigrateRecordRepo(MIGRATE_RECORD_REPO_DATA_PATH));
-    srv.handle(GitlabTranslator.fromIssueEvent(event.payload));
+    const mapper = new GitlabStatusMapper();
+    /**
+     * get repo by user
+     */
+    const userRepo = new UserJSONRepo();
+    userRepo.get({GitlabUserId: event.payload.object_attributes.author_id.toString()}).then((user?: User) => {
+        const toIssueRepo = new RedmineRepo(user ? user.RedmineToken : undefined);
+        /**
+         *
+         */
+        const srv = new MigrateIssueSrv(toIssueRepo, new MigrateRecordRepo(MIGRATE_RECORD_REPO_DATA_PATH));
+        srv.handleWithTranslator<IssueEvent, Issue>(event.payload, new GitlabIssueEvnetTranslator(mapper));
+    });
 });
 
 handler.on('note', (event: EventData<NoteEvent>) => {
