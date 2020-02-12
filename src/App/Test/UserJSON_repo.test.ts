@@ -1,5 +1,5 @@
 import {UserJSONRepo} from "../Infra/UserJSONRepo";
-import {User} from "../../Users/Domain/User";
+import {User} from "../../UserMap/Domain/User";
 
 describe("user repo", () => {
     test("User should save", async () => {
@@ -27,5 +27,22 @@ describe("user repo", () => {
         expect(userFromRepo2.RedmineUserId).not.toBe(userFromRepo.RedmineUserId);
         expect(userFromRepo2.RedmineUserId).toBe(user.RedmineUserId);
     });
+
+
+    test("Get User List", async () => {
+        const userRepo = new UserJSONRepo();
+        const user = {
+            GitlabUserId: "GitlabUserId-" + Math.random(),
+            GitlabUserEmail: "GitlabUserEmail",
+            RedmineUserId: "RedmineUserId",
+            RedmineToken: "RedmineToken",
+        } as User;
+
+        await userRepo.save(user);
+
+        const list = await userRepo.getList();
+        console.log(list);
+        expect(list.length).toBeGreaterThan(0);
+    })
 });
 

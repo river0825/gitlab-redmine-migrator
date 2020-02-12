@@ -15,7 +15,7 @@ export class MigrateRecordRepo implements MigrateRepo {
         if (directory) {
             this._directory = directory;
         } else {
-            this._directory = process.cwd() + Path.sep + "data"
+            this._directory = process.cwd() + Path.sep + "data" + Path.sep + 'merge_record'
         }
         if (!fs.existsSync(this._directory)) {
             fs.mkdirSync(this._directory, {recursive: true})

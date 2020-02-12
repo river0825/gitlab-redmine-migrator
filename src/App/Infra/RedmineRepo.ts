@@ -1,10 +1,16 @@
 import {RemoteIssueRepo} from "../../Migrate/Domain/MigrateRecord/RemoteIssueRepo";
 import {IssueId, IssueInfo, Issuer} from "../../Migrate/Domain/MigrateRecord/IssueInfo";
+// It will import the redmine interface from the @type
+// It define the interface of all the redmine api
+// this module if different from the next one below
 import {Issue} from "node-redmine";
 import {RedmineTranslator} from "../DomainService/RedmineTranslator";
 
+// It will import from the real node_module
+// and can be called easily
 // tslint:disable-next-line:variable-name
 const Redmine = require("node-redmine");
+
 
 export class RedmineRepo implements RemoteIssueRepo {
     // tslint:disable-next-line:ban-ts-ignore
@@ -14,12 +20,17 @@ export class RedmineRepo implements RemoteIssueRepo {
     // @ts-ignore
     private redmine: Redmine;
 
-    constructor() {
+    /**
+     *
+     * @param apiKey the api key from users
+     */
+    constructor(apiKey?: string) {
         const hostname = process.env.REDMINE_HOST || 'http://www.hostedredmine.com/';
-        const hostWithProject = (process.env.REDMINE_HOST!.toString() + process.env.REDMINE_PROJECT_PATH!.toString()) || 'http://www.hostedredmine.com/projects/test-credit-system';
+        const projectPath = process.env.REDMINE_PROJECT_PATH || '/projects/gitlab-redmine-migrator';
+        const hostWithProject = (hostname + projectPath) || 'http://www.hostedredmine.com/projects/test-credit-system';
 
         const config = {
-            apiKey: process.env.REDMINE_APIKEY || '77327f8a54450266a4853d015cb286f445f80590',
+            apiKey: apiKey || process.env.REDMINE_APIKEY || '77327f8a54450266a4853d015cb286f445f80590',
         };
 
         this.redmine = new Redmine(hostname, config);
@@ -52,7 +63,7 @@ export class RedmineRepo implements RemoteIssueRepo {
 
         return new Promise<void>((resolve, reject) => {
             // tslint:disable-next-line:ban-ts-ignore no-any
-            this.redmine.update_issue(Number.parseInt(issueId.id, 10), redmineIssue, (err: any, data: Issue) => {
+            this.redmine.update_issue(Number.parseInt(issueId.id, 10), redmineIssue, (err: any) => {
                 if (err) {
                     return reject(err);
                 }
@@ -62,7 +73,7 @@ export class RedmineRepo implements RemoteIssueRepo {
     }
 
     queryIssue(issue: IssueInfo): Promise<IssueInfo> {
-        return new Promise<IssueInfo>((resolve, reject) => {
+        return new Promise<IssueInfo>(() => {
         })
     }
 
@@ -72,7 +83,7 @@ export class RedmineRepo implements RemoteIssueRepo {
         console.log(['to redmine issue', redmineIssue]);
         return new Promise<IssueId>((resolve, reject) => {
             // tslint:disable-next-line:ban-ts-ignore no-any
-            this.redmine.update_issue(Number.parseInt(issue.props.toIssueId!.id, 10), redmineIssue, (err: any, data: Issue) => {
+            this.redmine.update_issue(Number.parseInt(issue.props.toIssueId!.id, 10), redmineIssue, (err: any) => {
                 if (err) {
                     return reject(err);
                 }

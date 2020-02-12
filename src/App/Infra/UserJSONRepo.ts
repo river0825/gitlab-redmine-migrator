@@ -1,5 +1,5 @@
-import {UserRepo} from "../../Users/Domain/UserRepo";
-import {User} from "../../Users/Domain/User";
+import {UserRepo} from "../../UserMap/Domain/UserRepo";
+import {User} from "../../UserMap/Domain/User";
 import * as fs from "fs";
 import * as Path from "path";
 
@@ -10,7 +10,7 @@ export class UserJSONRepo implements UserRepo {
         if (directory) {
             this._directory = directory;
         } else {
-            this._directory = process.cwd() + Path.sep + "data"
+            this._directory = process.cwd() + Path.sep + "data" + Path.sep + "users"
         }
         if (!fs.existsSync(this._directory)) {
             fs.mkdirSync(this._directory, {recursive: true})
@@ -18,7 +18,18 @@ export class UserJSONRepo implements UserRepo {
     }
 
     private getFilePath(userId: string): string {
-        return this._directory + Path.sep + userId + "_map.json";
+        return this._directory + Path.sep + userId;
+    }
+
+    getList(): Promise<string[]> {
+        return new Promise<string[]>((resolve, reject) => {
+            fs.readdir(this._directory, {encoding: "ascii", withFileTypes: false}, (err, files: string[]) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve(files);
+            })
+        })
     }
 
     get(user: User): Promise<User> {
