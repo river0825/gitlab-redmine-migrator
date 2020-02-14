@@ -35,7 +35,7 @@ export class MigrateRecord {
         this._migrateRepo = migrateRepo;
     }
 
-    async migrate(from: IssueInfo, toRepo: RemoteIssueRepo) {
+    async migrate<TRANSLATE_FROM, TRANSLATE_TO>(from: IssueInfo, toRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>) {
         if (this._toIssueId !== undefined) {
             this._issueInfo = from;
             await toRepo.updateIssue(from);

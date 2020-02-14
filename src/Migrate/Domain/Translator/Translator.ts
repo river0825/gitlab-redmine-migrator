@@ -1,9 +1,9 @@
-import {MigrateRecord} from "../MigrateRecord/MigrateRecord";
-import {IssueInfo} from "../MigrateRecord/IssueInfo";
+import {IssueId, IssueInfo} from "../MigrateRecord/IssueInfo";
 
+export interface Translator<TRANSLATE_FROM, TRANSLATE_TO> {
+    toIssueInfo(payload: TRANSLATE_FROM): Promise<IssueInfo>;
 
-export interface Translator<T, R> {
-    toIssueInfo(payload: T, migrateRecord?: MigrateRecord): Promise<IssueInfo>;
+    fromIssueInfo(issueInfo: IssueInfo): Promise<TRANSLATE_TO>;
 
-    fromIssueInfo(issueInfo: IssueInfo, migrateRecord: MigrateRecord): Promise<R>;
+    fromIssueIdToAddNote(issueId: IssueId, note: string): Promise<TRANSLATE_TO>;
 }

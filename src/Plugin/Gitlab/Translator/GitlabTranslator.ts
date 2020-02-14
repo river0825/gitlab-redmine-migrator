@@ -1,23 +1,23 @@
-import {IssueInfo, Issuer, IssueState} from "../../Migrate/Domain/MigrateRecord/IssueInfo";
+// import {IssueInfo, Issuer, IssueState} from "../../../Migrate/Domain/MigrateRecord/IssueInfo";
 import {Issue, IssueEvent, NoteEvent} from "node-gitlab-webhook/interfaces";
-import {IssueInfoStatusMapper} from "./IssueInfoStatusMapper";
-import {Translator} from "../../Migrate/Domain/Translator/Translator";
-import {MigrateRecord} from "../../Migrate/Domain/MigrateRecord/MigrateRecord";
+import {IssueId, IssueInfo, Issuer, IssueState} from "../../../Migrate/Domain/MigrateRecord/IssueInfo";
+import {Translator} from "../../../Migrate/Domain/Translator/Translator";
 
 export class GitlabIssueEvnetTranslator implements Translator<IssueEvent, Issue> {
-    private issueMapper: IssueInfoStatusMapper<IssueEvent>;
-
-    constructor(issueMapper: IssueInfoStatusMapper<IssueEvent>) {
-        this.issueMapper = issueMapper;
-    }
-
-    fromIssueInfo(issueInfo: IssueInfo, migrateRecord: MigrateRecord): Promise<Issue> {
+    fromIssueInfo(issueInfo: IssueInfo): Promise<Issue> {
         return new Promise<Issue>((resolve, reject) => {
             reject("not implement yet");
         });
     }
 
-    toIssueInfo(issueEvent: IssueEvent, migrateRecord?: MigrateRecord): Promise<IssueInfo> {
+
+    fromIssueIdToAddNote(issueId: IssueId, note: string): Promise<Issue> {
+        return new Promise<Issue>((_, reject) => {
+            reject("not implement yet");
+        });
+    }
+
+    toIssueInfo(issueEvent: IssueEvent): Promise<IssueInfo> {
         return new Promise<IssueInfo>((resolve) => {
             const labelArr = issueEvent.labels.map<string>((label) => {
                 return label.title
@@ -28,7 +28,7 @@ export class GitlabIssueEvnetTranslator implements Translator<IssueEvent, Issue>
                 title: issueEvent.object_attributes.title,
                 assignee: issueEvent.assignee ? issueEvent.assignee.name : "",
                 author: issueEvent.user.name,
-                projectId: issueEvent.project.id,
+                projectId: issueEvent.project.id!.toString(),
                 createdAt: new Date(issueEvent.object_attributes.created_at),
                 updatedAt: new Date(issueEvent.object_attributes.updated_at),
                 description: issueEvent.object_attributes.description,
@@ -38,13 +38,10 @@ export class GitlabIssueEvnetTranslator implements Translator<IssueEvent, Issue>
                 labels: labelArr
             });
 
-            console.log(JSON.stringify(issueInfo));
-
             resolve(issueInfo);
         });
 
     }
-
 }
 
 export class GitlabTranslator {
@@ -60,7 +57,7 @@ export class GitlabTranslator {
             title: issueEvent.object_attributes.title,
             assignee: issueEvent.assignee ? issueEvent.assignee.name : "",
             author: issueEvent.user.name,
-            projectId: issueEvent.project.id,
+            projectId: issueEvent.project.id!.toString(),
             createdAt: new Date(issueEvent.object_attributes.created_at),
             updatedAt: new Date(issueEvent.object_attributes.updated_at),
             description: issueEvent.object_attributes.description,
@@ -78,7 +75,7 @@ export class GitlabTranslator {
     static fromNoteEvent(event: NoteEvent): IssueInfo {
         return new IssueInfo({
             id: {id: event.issue!.id.toString(), issuer: Issuer.Gitlab},
-            projectId: event.project.id,
+            projectId: event.project.id!.toString(),
             updatedAt: new Date(event.object_attributes.updated_at),
 
             title: event.issue!.title,

@@ -24,7 +24,7 @@ export interface IssueInfoProp {
     title?: string;
     assignee?: string;
     author?: string;
-    projectId?: number;
+    projectId?: string;
     projectName?: string;
     createdAt?: Date;
     updatedAt?: Date;

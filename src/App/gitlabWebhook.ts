@@ -2,14 +2,13 @@ import * as http from 'http'
 import * as createHandler from 'node-gitlab-webhook'
 import {EventData, Issue, IssueEvent, NoteEvent} from "node-gitlab-webhook/interfaces";
 import {MigrateIssueSrv} from "../Migrate/Application/Service/MigrateIssueSrv";
-import {RedmineRepo} from "./Infra/RedmineRepo";
 import {MigrateRecordRepo} from "./Infra/MigrateRecordRepo";
-import {GitlabIssueEvnetTranslator, GitlabTranslator} from "./DomainService/GitlabTranslator";
 import * as Path from "path";
 import {AddNoteSrv} from "../Migrate/Application/Service/AddNoteSrv";
-import {GitlabStatusMapper} from "./DomainService/GitlabStatusMapper";
 import {UserJSONRepo} from "./Infra/UserJSONRepo";
 import {User} from "../UserMap/Domain/User";
+import {GitlabIssueEvnetTranslator, GitlabTranslator} from "../Plugin/Gitlab/Translator/GitlabTranslator";
+import {RedmineRepo} from "../Plugin/Redmine/Repo/RedmineRepo";
 
 /**
  * gitlab-webhook
@@ -56,7 +55,6 @@ handler.on('issue', (event: EventData<IssueEvent>) => {
         event.payload.object_attributes.title,
     );
 
-    const mapper = new GitlabStatusMapper();
     /**
      * get repo by user
      */
@@ -67,7 +65,7 @@ handler.on('issue', (event: EventData<IssueEvent>) => {
          *
          */
         const srv = new MigrateIssueSrv(toIssueRepo, new MigrateRecordRepo(MIGRATE_RECORD_REPO_DATA_PATH));
-        srv.handleWithTranslator<IssueEvent, Issue>(event.payload, new GitlabIssueEvnetTranslator(mapper));
+        srv.handleWithTranslator(event.payload, new GitlabIssueEvnetTranslator());
     });
 });
 

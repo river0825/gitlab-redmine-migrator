@@ -1,10 +1,11 @@
-import {RedmineRepo} from "../Infra/RedmineRepo";
-import {IssueInfo, Issuer} from "../../Migrate/Domain/MigrateRecord/IssueInfo";
+import {RedmineRepo} from "../Repo/RedmineRepo";
+import {IssueInfo, Issuer} from "../../../Migrate/Domain/MigrateRecord/IssueInfo";
 
 describe("redmine repo", () => {
     let issueId  = "0" ;
     test("Issue should be create correctly", async () => {
         const redmineRepo = new RedmineRepo();
+
         const result = await redmineRepo.addIssue(new IssueInfo({
             id: {id: "1", issuer: Issuer.Redmine},
             title: "this is a test title",

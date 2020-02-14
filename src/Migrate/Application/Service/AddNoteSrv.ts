@@ -3,11 +3,12 @@ import {MigrateRepo} from "../../Domain/MigrateRecord/MigrateRepo";
 import {RemoteIssueRepo} from "../../Domain/MigrateRecord/RemoteIssueRepo";
 import {MigrateRecordFactory} from "../../DomainService/MigrateRecordFactory";
 
-export class AddNoteSrv {
+export class AddNoteSrv<TRANSLATE_FROM, TRANSLATE_TO> {
     private readonly migrateRepo: MigrateRepo;
-    private toIssueRepo: RemoteIssueRepo;
+    private toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>
+    ;
 
-    constructor(toIssueRepo: RemoteIssueRepo, migrateRepo: MigrateRepo) {
+    constructor(toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>, migrateRepo: MigrateRepo) {
         this.toIssueRepo = toIssueRepo;
         this.migrateRepo = migrateRepo;
     }

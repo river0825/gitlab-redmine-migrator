@@ -4,11 +4,11 @@ import {RemoteIssueRepo} from "../../Domain/MigrateRecord/RemoteIssueRepo";
 import {MigrateRecordFactory} from "../../DomainService/MigrateRecordFactory";
 import {Translator} from "../../Domain/Translator/Translator";
 
-export class MigrateIssueSrv {
+export class MigrateIssueSrv<TRANSLATE_FROM, TRANSLATE_TO> {
     private migrateRepo: MigrateRepo;
-    private toIssueRepo: RemoteIssueRepo;
+    private toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>;
 
-    constructor(toIssueRepo: RemoteIssueRepo, migrateRepo: MigrateRepo) {
+    constructor(toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>, migrateRepo: MigrateRepo) {
         this.toIssueRepo = toIssueRepo;
         this.migrateRepo = migrateRepo;
     }
@@ -24,7 +24,7 @@ export class MigrateIssueSrv {
         }
     }
 
-    async handleWithTranslator<T, R>(payload: T, translator: Translator<T, R>) {
+    async handleWithTranslator(payload: TRANSLATE_FROM, translator: Translator<TRANSLATE_FROM, TRANSLATE_TO>) {
         const fromIssue: IssueInfo = await translator.toIssueInfo(payload);
         this.handle(fromIssue);
     }
