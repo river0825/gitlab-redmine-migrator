@@ -24,7 +24,7 @@ export class MigrateRecord {
     _id: MigrateRecordId;
     _issueInfo: IssueInfo;
     _fromIssueId?: IssueId;
-    private _toIssueId?: IssueId;
+    _toIssueId?: IssueId;
     _migrateRepo: MigrateRepo;
 
     constructor(id: MigrateRecordId, props: MigrateRecordProp, migrateRepo: MigrateRepo) {
@@ -35,7 +35,7 @@ export class MigrateRecord {
         this._migrateRepo = migrateRepo;
     }
 
-    async migrate<TRANSLATE_FROM, TRANSLATE_TO>(from: IssueInfo, toRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>) {
+    async migrate(from: IssueInfo, toRepo: RemoteIssueRepo) {
         if (this._toIssueId !== undefined) {
             this._issueInfo = from;
             await toRepo.updateIssue(from);

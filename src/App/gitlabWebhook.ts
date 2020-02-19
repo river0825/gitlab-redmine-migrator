@@ -1,14 +1,7 @@
 import * as http from 'http'
 import * as createHandler from 'node-gitlab-webhook'
 import {EventData, Issue, IssueEvent, NoteEvent} from "node-gitlab-webhook/interfaces";
-import {MigrateIssueSrv} from "../Migrate/Application/Service/MigrateIssueSrv";
-import {MigrateRecordRepo} from "./Infra/MigrateRecordRepo";
-import * as Path from "path";
-import {AddNoteSrv} from "../Migrate/Application/Service/AddNoteSrv";
-import {UserJSONRepo} from "./Infra/UserJSONRepo";
-import {User} from "../UserMap/Domain/User";
-import {GitlabIssueEvnetTranslator, GitlabTranslator} from "../Plugin/Gitlab/Translator/GitlabTranslator";
-import {RedmineRepo} from "../Plugin/Redmine/Repo/RedmineRepo";
+import {GitlabIssue2RedmineSrv} from "../IssueTrackers/Application/Service/GitlabIssue2RedmineSrv";
 
 /**
  * gitlab-webhook
@@ -34,8 +27,6 @@ http.createServer((req: http.IncomingMessage, res: http.ServerResponse): void =>
     })
 }).listen(process.env.GRM_LISTEN_PORT);
 
-const MIGRATE_RECORD_REPO_DATA_PATH = process.cwd() + Path.sep + "data";
-
 /**
  * Provide ability to add user maps
  * TODO: addUserMap()
@@ -48,7 +39,7 @@ handler.on('error', (err) => {
     console.error('Error:', err.message)
 });
 
-handler.on('issue', (event: EventData<IssueEvent>) => {
+handler.on('issue', async (event: EventData<IssueEvent>) => {
     console.log(
         'Received a issue event for repo "%s". Issue Name %s',
         event.payload.repository.name,
@@ -58,15 +49,16 @@ handler.on('issue', (event: EventData<IssueEvent>) => {
     /**
      * get repo by user
      */
-    const userRepo = new UserJSONRepo();
-    userRepo.get({GitlabUserId: event.payload.object_attributes.author_id.toString()}).then((user?: User) => {
-        const toIssueRepo = new RedmineRepo(user ? user.RedmineToken : undefined);
-        /**
-         *
-         */
-        const srv = new MigrateIssueSrv(toIssueRepo, new MigrateRecordRepo(MIGRATE_RECORD_REPO_DATA_PATH));
-        srv.handleWithTranslator(event.payload, new GitlabIssueEvnetTranslator());
-    });
+    // const userRepo = new UserJSONRepo();
+    // userRepo.get({GitlabUserId: event.payload.object_attributes.author_id.toString()}).then((user?: User) => {
+    //     const toIssueRepo = new RedmineRepo(user ? user.RedmineToken : undefined);
+    /**
+     *
+     */
+    // const srv = new MigrateIssueSrv(toIssueRepo, new MigrateRecordRepo());
+    // srv.handleWithTranslator(event.payload, new GitlabIssueEvnetTranslator());
+    // });
+    await GitlabIssue2RedmineSrv.handle(event);
 });
 
 handler.on('note', (event: EventData<NoteEvent>) => {
@@ -82,6 +74,6 @@ handler.on('note', (event: EventData<NoteEvent>) => {
         console.log(`noteid: ${note.id}. note type is ${note.noteable_type}, ignore it!!`)
     }
 
-    const srv = new AddNoteSrv(new RedmineRepo(), new MigrateRecordRepo(MIGRATE_RECORD_REPO_DATA_PATH));
-    srv.handle(GitlabTranslator.fromNoteEvent(event.payload), GitlabTranslator.fromNoteEventToNote(event.payload));
+    // const srv = new AddNoteSrv(new RedmineRepo(), new MigrateRecordRepo(MIGRATE_RECORD_REPO_DATA_PATH));
+    // srv.handle(GitlabTranslator.fromNoteEvent(event.payload), GitlabTranslator.fromNoteEventToNote(event.payload));
 });

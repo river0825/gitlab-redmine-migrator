@@ -5,10 +5,10 @@ import {MigrateRecordFactory} from "../../DomainService/MigrateRecordFactory";
 
 export class AddNoteSrv<TRANSLATE_FROM, TRANSLATE_TO> {
     private readonly migrateRepo: MigrateRepo;
-    private toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>
+    private toIssueRepo: RemoteIssueRepo
     ;
 
-    constructor(toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>, migrateRepo: MigrateRepo) {
+    constructor(toIssueRepo: RemoteIssueRepo, migrateRepo: MigrateRepo) {
         this.toIssueRepo = toIssueRepo;
         this.migrateRepo = migrateRepo;
     }

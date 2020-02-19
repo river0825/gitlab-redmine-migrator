@@ -28,7 +28,7 @@ const migrateRepo = () => {
     }
 };
 
-const remoteIssueRepo = (): RemoteIssueRepo<IssueInfo, IssueState> => {
+const remoteIssueRepo = (): RemoteIssueRepo => {
     return {
         addIssue: jest.fn().mockResolvedValue(undefined),
         updateIssue: jest.fn().mockResolvedValue(undefined),

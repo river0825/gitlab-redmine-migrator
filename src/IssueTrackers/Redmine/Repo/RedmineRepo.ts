@@ -7,7 +7,7 @@ import {RedmineTranslator} from "../Translator/RedmineTranslator";
 // tslint:disable-next-line:variable-name
 const Redmine = require("node-redmine");
 
-export class RedmineRepo implements RemoteIssueRepo<Issue, IssueData> {
+export class RedmineRepo implements RemoteIssueRepo {
     private redmineWithProject: RedmineClass;
     private redmine: RedmineClass;
     private _translator?: Translator<Issue, IssueData>;
@@ -81,7 +81,7 @@ export class RedmineRepo implements RemoteIssueRepo<Issue, IssueData> {
         const translator = new RedmineTranslator();
         return new Promise<IssueId>((resolve, reject) => {
             translator.fromIssueInfo(issue).then((redmineIssue) => {
-                // tslint:disable-next-line:ban-ts-ignore no-any
+                // tslint:disable-next-line:no-any
                 this.redmine.update_issue(Number.parseInt(issue.props.toIssueId!.id, 10), redmineIssue, (err: any) => {
                     if (err) {
                         return reject(err);

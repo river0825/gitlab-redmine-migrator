@@ -4,28 +4,33 @@ import {RemoteIssueRepo} from "../../Domain/MigrateRecord/RemoteIssueRepo";
 import {MigrateRecordFactory} from "../../DomainService/MigrateRecordFactory";
 import {Translator} from "../../Domain/Translator/Translator";
 
-export class MigrateIssueSrv<TRANSLATE_FROM, TRANSLATE_TO> {
+export class MigrateIssueSrv {
     private migrateRepo: MigrateRepo;
-    private toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>;
+    private toIssueRepo: RemoteIssueRepo;
 
-    constructor(toIssueRepo: RemoteIssueRepo<TRANSLATE_FROM, TRANSLATE_TO>, migrateRepo: MigrateRepo) {
+    constructor(toIssueRepo: RemoteIssueRepo, migrateRepo: MigrateRepo) {
         this.toIssueRepo = toIssueRepo;
         this.migrateRepo = migrateRepo;
     }
 
-    async handle(fromIssue: IssueInfo) {
+    async handle<TRANSLATE_FROM, TRANSLATE_TO>(fromIssue: IssueInfo) {
         let record = await this.migrateRepo.getRecord(fromIssue);
         if (!record) {
             record = MigrateRecordFactory.getMigrateRecord(fromIssue, this.migrateRepo);
-            record.migrate(fromIssue, this.toIssueRepo);
+            await record.migrate(fromIssue, this.toIssueRepo);
         } else {
             const fi = fromIssue.setToIssueId(record.toIssueId);
-            record.migrate(fi, this.toIssueRepo);
+            await record.migrate(fi, this.toIssueRepo);
         }
     }
 
-    async handleWithTranslator(payload: TRANSLATE_FROM, translator: Translator<TRANSLATE_FROM, TRANSLATE_TO>) {
+    /**
+     * @deprecated use Gitlab2Redmine.migrateGitlabIssue2Redmine instead
+     * @param payload
+     * @param translator
+     */
+    async handleWithTranslator<TRANSLATE_FROM, TRANSLATE_TO>(payload: TRANSLATE_FROM, translator: Translator<TRANSLATE_FROM, TRANSLATE_TO>) {
         const fromIssue: IssueInfo = await translator.toIssueInfo(payload);
-        this.handle(fromIssue);
+        await this.handle(fromIssue);
     }
 }
