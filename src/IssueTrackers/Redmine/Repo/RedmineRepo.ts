@@ -55,10 +55,8 @@ export class RedmineRepo implements RemoteIssueRepo {
         })
     }
 
-
     addNote(issueId: IssueId, note: string): Promise<void> {
         const translator = new RedmineTranslator();
-
         return new Promise<void>((resolve, reject) => {
             translator.fromIssueIdToAddNote(issueId, note).then((redmineIssue) => {
                 // tslint:disable-next-line:ban-ts-ignore no-any

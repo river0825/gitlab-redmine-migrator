@@ -2,6 +2,7 @@ import * as http from 'http'
 import * as createHandler from 'node-gitlab-webhook'
 import {EventData, Issue, IssueEvent, NoteEvent} from "node-gitlab-webhook/interfaces";
 import {GitlabIssue2RedmineSrv} from "../IssueTrackers/Application/Service/GitlabIssue2RedmineSrv";
+import {GitlabAddNote2RedmineSrv} from "../IssueTrackers/Application/Service/GitlabAddNote2RedmineSrv";
 
 /**
  * gitlab-webhook
@@ -46,22 +47,10 @@ handler.on('issue', async (event: EventData<IssueEvent>) => {
         event.payload.object_attributes.title,
     );
 
-    /**
-     * get repo by user
-     */
-    // const userRepo = new UserJSONRepo();
-    // userRepo.get({GitlabUserId: event.payload.object_attributes.author_id.toString()}).then((user?: User) => {
-    //     const toIssueRepo = new RedmineRepo(user ? user.RedmineToken : undefined);
-    /**
-     *
-     */
-    // const srv = new MigrateIssueSrv(toIssueRepo, new MigrateRecordRepo());
-    // srv.handleWithTranslator(event.payload, new GitlabIssueEvnetTranslator());
-    // });
     await GitlabIssue2RedmineSrv.handle(event);
 });
 
-handler.on('note', (event: EventData<NoteEvent>) => {
+handler.on('note', async (event: EventData<NoteEvent>) => {
     const note = event.payload.object_attributes;
     console.log(
         'Received a event note for repo "%s". Issue Name %s, Note %s',
@@ -74,6 +63,5 @@ handler.on('note', (event: EventData<NoteEvent>) => {
         console.log(`noteid: ${note.id}. note type is ${note.noteable_type}, ignore it!!`)
     }
 
-    // const srv = new AddNoteSrv(new RedmineRepo(), new MigrateRecordRepo(MIGRATE_RECORD_REPO_DATA_PATH));
-    // srv.handle(GitlabTranslator.fromNoteEvent(event.payload), GitlabTranslator.fromNoteEventToNote(event.payload));
+    await GitlabAddNote2RedmineSrv.handle(event);
 });

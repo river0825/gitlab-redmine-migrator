@@ -1,6 +1,6 @@
-import {GitlabIssueEvnetTranslator} from "../Translator/GitlabTranslator";
 import {IssueEvent} from "node-gitlab-webhook/interfaces";
 import {IssueInfo, Issuer, IssueState} from "../../../Migrate/Domain/MigrateRecord/IssueInfo";
+import {GitlabIssueEvnetTranslator} from "../Translator/GitlabIssueEvnetTranslator";
 
 describe("gitlab translator", () => {
     const getEvent = (): IssueEvent => {

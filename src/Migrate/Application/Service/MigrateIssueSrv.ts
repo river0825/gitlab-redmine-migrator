@@ -2,7 +2,6 @@ import {IssueInfo} from "../../Domain/MigrateRecord/IssueInfo";
 import {MigrateRepo} from "../../Domain/MigrateRecord/MigrateRepo";
 import {RemoteIssueRepo} from "../../Domain/MigrateRecord/RemoteIssueRepo";
 import {MigrateRecordFactory} from "../../DomainService/MigrateRecordFactory";
-import {Translator} from "../../Domain/Translator/Translator";
 
 export class MigrateIssueSrv {
     private migrateRepo: MigrateRepo;
@@ -13,10 +12,10 @@ export class MigrateIssueSrv {
         this.migrateRepo = migrateRepo;
     }
 
-    async handle<TRANSLATE_FROM, TRANSLATE_TO>(fromIssue: IssueInfo) {
+    async handle(fromIssue: IssueInfo) {
         let record = await this.migrateRepo.getRecord(fromIssue);
         if (!record) {
-            record = MigrateRecordFactory.getMigrateRecord(fromIssue, this.migrateRepo);
+            record = MigrateRecordFactory.createMigrateRecord(fromIssue, this.migrateRepo);
             await record.migrate(fromIssue, this.toIssueRepo);
         } else {
             const fi = fromIssue.setToIssueId(record.toIssueId);
@@ -29,8 +28,8 @@ export class MigrateIssueSrv {
      * @param payload
      * @param translator
      */
-    async handleWithTranslator<TRANSLATE_FROM, TRANSLATE_TO>(payload: TRANSLATE_FROM, translator: Translator<TRANSLATE_FROM, TRANSLATE_TO>) {
-        const fromIssue: IssueInfo = await translator.toIssueInfo(payload);
-        await this.handle(fromIssue);
-    }
+    // async handleWithTranslator<TRANSLATE_FROM, TRANSLATE_TO>(payload: TRANSLATE_FROM, translator: Translator<TRANSLATE_FROM, TRANSLATE_TO>) {
+    //     const fromIssue: IssueInfo = await translator.toIssueInfo(payload);
+    //     await this.handle(fromIssue);
+    // }
 }

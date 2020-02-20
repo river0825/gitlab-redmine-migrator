@@ -32,7 +32,6 @@ export class RedmineTranslator implements Translator<Issue, IssueData> {
                     notes: note
                 }
             };
-
             resolve(issue);
         });
     }

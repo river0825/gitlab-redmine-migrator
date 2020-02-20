@@ -4,8 +4,6 @@ import * as fs from "fs";
 import {Gitlab2Redmine} from "../DomainService/Gitlab2Redmine";
 
 describe("Test GitlabIssue2Redmine Service", () => {
-
-
     test("Issue should be create correctly", async () => {
         const mockGitlab2Redmine = jest.genMockFromModule("../DomainService/Gitlab2Redmine") as Gitlab2Redmine;
         mockGitlab2Redmine.migrateGitlabIssue2Redmine = jest.fn().mockResolvedValue(undefined);

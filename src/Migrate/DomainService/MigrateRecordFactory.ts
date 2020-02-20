@@ -3,7 +3,7 @@ import {MigrateRecord} from "../Domain/MigrateRecord/MigrateRecord";
 import {MigrateRepo} from "../Domain/MigrateRecord/MigrateRepo";
 
 export class MigrateRecordFactory {
-    static getMigrateRecord(fromIssue: IssueInfo, migrateRepo: MigrateRepo) {
+    static createMigrateRecord(fromIssue: IssueInfo, migrateRepo: MigrateRepo) {
         return new MigrateRecord(
             {id: fromIssue.props.id!.id, issuer: fromIssue.props.id!.issuer},
             {

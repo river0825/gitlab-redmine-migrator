@@ -23,7 +23,9 @@ export class MigrateRecordRepo implements MigrateRepo {
     }
 
     private getFilePath(issueInfo: IssueInfo): string {
-        return this._directory + Path.sep + issueInfo.props.id!.issuer + "_" + issueInfo.props.projectId! + "_" + issueInfo.props.id!.id + ".json";
+        const path = this._directory + Path.sep + issueInfo.props.id!.issuer + "_" + issueInfo.props.projectId! + "_" + issueInfo.props.id!.id + ".json";
+        return path;
+        // return this._directory + Path.sep + issueInfo.props.id!.issuer + "_" + issueInfo.props.projectId! + "_" + issueInfo.props.id!.id + ".json";
     }
 
     getRecord(fromIssue: IssueInfo): Promise<MigrateRecord> {
