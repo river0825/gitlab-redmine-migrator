@@ -66,4 +66,20 @@ export class UserJSONRepo implements UserRepo {
             })
         })
     }
+
+    del(record: User): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            if (!fs.existsSync(this.getFilePath(record.GitlabUserId))) {
+                reject("The user not exists");
+                return;
+            }
+
+            fs.unlink(this.getFilePath(record.GitlabUserId), (err) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            })
+        })
+    }
 }

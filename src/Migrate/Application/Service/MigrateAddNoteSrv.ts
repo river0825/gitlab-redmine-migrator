@@ -11,13 +11,15 @@ export class MigrateAddNoteSrv {
         this.migrateRepo = migrateRepo;
     }
 
-    async handle(fromIssue: IssueInfo, note: string) {
-        const record = await this.migrateRepo.getRecord(fromIssue);
-        if (!record) {
-            throw Error(`There is no record to comment. IssueId: ${fromIssue.props.id!.id}`)
-        }
-        console.log(["before add note", record]);
+    handle(fromIssue: IssueInfo, note: string): Promise<void> {
+        return new Promise<void>(async (resolve, reject) => {
+            const record = await this.migrateRepo.getRecord(fromIssue);
+            if (!record) {
+                reject(`There is no record to comment. IssueId: ${fromIssue.props.id!.id}`)
+            }
+            await this.toIssueRepo.addNote(record.toIssueId, note);
+            resolve();
+        })
 
-        await this.toIssueRepo.addNote(record.toIssueId, note);
     }
 }

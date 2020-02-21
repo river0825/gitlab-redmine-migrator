@@ -1,7 +1,6 @@
 import {RemoteIssueRepo} from "../../../Migrate/Domain/MigrateRecord/RemoteIssueRepo";
 import {IssueId, IssueInfo, Issuer} from "../../../Migrate/Domain/MigrateRecord/IssueInfo";
 import {Issue, IssueData, Redmine as RedmineClass} from "node-redmine";
-import {Translator} from "../../../Migrate/Domain/Translator/Translator";
 import {RedmineTranslator} from "../Translator/RedmineTranslator";
 
 // tslint:disable-next-line:variable-name
@@ -10,7 +9,7 @@ const Redmine = require("node-redmine");
 export class RedmineRepo implements RemoteIssueRepo {
     private redmineWithProject: RedmineClass;
     private redmine: RedmineClass;
-    private _translator?: Translator<Issue, IssueData>;
+    private _translator?: RedmineTranslator; //Translator<Issue, IssueData>;
 
     /**
      *
@@ -27,11 +26,11 @@ export class RedmineRepo implements RemoteIssueRepo {
 
         this.redmine = new Redmine(hostname, config, Number(process.env.REDMINE_PORT || '80'));
         this.redmineWithProject = new Redmine(hostWithProject, config, Number(process.env.REDMINE_PORT || '80'));
-        this._translator = new RedmineTranslator();
+        // this._translator = new RedmineTranslator();
         // this.translator = null;
     }
 
-    setTranslator(translator: Translator<Issue, IssueData>): void {
+    setTranslator(translator: RedmineTranslator): void {
         this._translator = translator;
     }
 
@@ -56,9 +55,8 @@ export class RedmineRepo implements RemoteIssueRepo {
     }
 
     addNote(issueId: IssueId, note: string): Promise<void> {
-        const translator = new RedmineTranslator();
         return new Promise<void>((resolve, reject) => {
-            translator.fromIssueIdToAddNote(issueId, note).then((redmineIssue) => {
+            this._translator!.fromIssueIdToAddNote(issueId, note).then((redmineIssue) => {
                 // tslint:disable-next-line:ban-ts-ignore no-any
                 this.redmine.update_issue(Number.parseInt(issueId.id, 10), redmineIssue, (err: any) => {
                     if (err) {
@@ -76,9 +74,9 @@ export class RedmineRepo implements RemoteIssueRepo {
     }
 
     updateIssue(issue: IssueInfo): Promise<IssueId> {
-        const translator = new RedmineTranslator();
+        // const translator = new RedmineTranslator();
         return new Promise<IssueId>((resolve, reject) => {
-            translator.fromIssueInfo(issue).then((redmineIssue) => {
+            this._translator!.fromIssueInfo(issue).then((redmineIssue) => {
                 // tslint:disable-next-line:no-any
                 this.redmine.update_issue(Number.parseInt(issue.props.toIssueId!.id, 10), redmineIssue, (err: any) => {
                     if (err) {

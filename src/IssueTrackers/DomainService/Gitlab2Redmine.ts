@@ -21,6 +21,6 @@ export class Gitlab2Redmine {
     async addGitlabNote2Redmine(addNoteSrv: MigrateAddNoteSrv, gitlabTranslator: GitlabNoteEventTranslator, payload: NoteEvent) {
         const issueInfo = await gitlabTranslator.toIssueInfo(payload);
         const note = gitlabTranslator.fromNoteEventToNote(payload);
-        return addNoteSrv.handle(issueInfo, note);
+        await addNoteSrv.handle(issueInfo, note);
     }
 }

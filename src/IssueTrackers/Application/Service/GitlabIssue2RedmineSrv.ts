@@ -24,6 +24,9 @@ export class GitlabIssue2RedmineSrv {
          */
         const userRepo = new UserJSONRepo();
         const user = await userRepo.get({GitlabUserId: event.payload.object_attributes.author_id.toString()});
+        if (!user) {
+            throw Error(`user not found: ${event.payload.object_attributes.author_id}`);
+        }
         const toIssueRepo = new RedmineRepo(user ? user.RedmineToken : undefined);
         toIssueRepo.setTranslator(redmineTranslator);
 

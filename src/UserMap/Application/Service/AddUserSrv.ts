@@ -1,5 +1,6 @@
 import {UserRepo} from "../../Domain/UserRepo";
 import {User} from "../../Domain/User";
+import {AddUserSpec} from "../../Spec/AddUserSpec";
 
 export class AddUserSrv {
     private userRepo: UserRepo;
@@ -9,7 +10,7 @@ export class AddUserSrv {
     }
 
     async handle(user: User) {
-        this.userRepo.save(user)
+        AddUserSpec.check(user);
+        await this.userRepo.save(user)
     }
-
 }
